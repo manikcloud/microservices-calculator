@@ -1,3 +1,5 @@
+def DOCKER_IMAGE = "aksacrops.azurecr.io/dind-azcli:v1"
+
 pipeline {
     agent {
         kubernetes {
@@ -14,15 +16,15 @@ pipeline {
     }
     
     stages {
-        stage("Checkout") {   
-            steps {               	 
-                git branch: 'main', url: 'https://github.com/manikcloud/microservices-calculator.git'        	 
-            }    
-        }
+        // stage("Checkout") {   
+        //     steps {               	 
+        //         git branch: 'main', url: 'https://github.com/manikcloud/microservices-calculator.git'        	 
+        //     }    
+        // }
         
-        stage('Maven Clean') {
+        stage('Maven install') {
             steps {
-                sh "mvn clean"  	 
+                sh "mvn clean install"  	 
             }
         }
         
