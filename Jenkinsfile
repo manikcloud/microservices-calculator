@@ -33,7 +33,7 @@ environment {
         maven 'my_mvn'
     }
     
-    stages {
+    // stages {
         // stage("Checkout") {   
         //     steps {               	 
         //         git branch: 'main', url: 'https://github.com/manikcloud/microservices-calculator.git'        	 
