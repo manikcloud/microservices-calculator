@@ -46,6 +46,11 @@ pipeline {
                 sh "mvn package" 
             }
         }
+        stage("list files") {
+            steps {
+                sh "ls -l *" 
+            }
+        }
     }
     
     post {
