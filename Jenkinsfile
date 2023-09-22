@@ -16,7 +16,7 @@ pipeline {
                     securityContext:
                       privileged: true
             '''
-            defaultContainer 'maven'
+            defaultContainer 'docker'
         }
     }
 
@@ -107,3 +107,5 @@ environment {
     //     }
     // }
 }
+
+// az aks update -n aks_ops-mature-mite -g devops-rg-smooth-akita --attach-acr aksacrops
