@@ -30,16 +30,18 @@ pipeline {
     tools {
         maven 'my_mvn'
     }
-    
-    stage('CD') {
-        steps {
-            container('docker-kbctl-helm') { // or 'docker-kbctl-helm', depending on which container you want to use
-                sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
-                sh "helm ls -A"
-            }
-        }
+    stages {
+      stage('CD') {
+          steps {
+              container('docker-kbctl-helm') { // or 'docker-kbctl-helm', depending on which container you want to use
+                  sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
+                  sh "helm ls -A"
+              }
+          }
+      }
     }
 }
+
   // stages {
         // stage("Checkout") {   
         //     steps {               	 
