@@ -15,6 +15,12 @@ pipeline {
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true
+                containers:
+                  - name: docker
+                    image: aksacrops.azurecr.io/kbctl-helm:v1
+                    imagePullPolicy: IfNotPresent
+                    securityContext:
+                      privileged: true                      
             '''
             defaultContainer 'docker'
         }
@@ -97,11 +103,13 @@ environment {
         }                
     }
     
-    // post { 
-    //     always {  
-    //         junit 'target/surefire-reports/*.xml'
-    //     }
-    // }
-}
 
-// az aks update -n aks_ops-mature-mite -g devops-rg-smooth-akita --attach-acr aksacrops
+        stage('CD') {
+            steps {
+              container('docker') {
+                sh "helm upgrade --install prd-java-calc golden-chart/ -f app_values/java-calc/values.yaml"
+                sh "helm ls -A"
+        }
+      
+    
+  }

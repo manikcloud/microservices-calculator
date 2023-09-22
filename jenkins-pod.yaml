@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+spec:
+  restartPolicy: Never
+  containers:
+    - name: docker
+      image: aksacrops.azurecr.io/dind-azcli:v1
+      imagePullPolicy: IfNotPresent
+      securityContext:
+        privileged: true
