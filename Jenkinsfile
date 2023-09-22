@@ -33,6 +33,15 @@ environment {
         maven 'my_mvn'
     }
     
+    stage('CD') {
+        steps {
+          container('docker') {
+            sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
+            sh "helm ls -A"
+            }
+          }
+      }
+}
     // stages {
         // stage("Checkout") {   
         //     steps {               	 
@@ -102,12 +111,3 @@ environment {
     //         }
     //     }                
     // }
-        stage('CD') {
-            steps {
-              container('docker') {
-                sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
-                sh "helm ls -A"
-                }
-              }
-          }
-}
