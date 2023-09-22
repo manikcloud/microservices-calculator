@@ -1,5 +1,4 @@
 pipeline {
-    
     agent {
         kubernetes {
             inheritFrom 'jenkins-jenkins-agent'
@@ -10,23 +9,22 @@ pipeline {
               spec:
                 restartPolicy: Never
                 containers:
-                  - name: docker
+                  - name: docker-azcli
                     image: aksacrops.azurecr.io/dind-azcli:v1
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true
-                containers:
-                  - name: docker
+                  - name: docker-kbctl-helm
                     image: aksacrops.azurecr.io/kbctl-helm:v1
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true                      
             '''
-            defaultContainer 'docker'
+            defaultContainer 'docker-azcli'
         }
     }
 
-environment {
+    environment {
         DOCKER_IMAGE = "aksacrops.azurecr.io/calc:${env.BUILD_NUMBER}"
     }    
     tools {
@@ -35,14 +33,14 @@ environment {
     
     stage('CD') {
         steps {
-          container('docker') {
-            sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
-            sh "helm ls -A"
+            container('docker-kbctl-helm') { // or 'docker-kbctl-helm', depending on which container you want to use
+                sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
+                sh "helm ls -A"
             }
-          }
-      }
+        }
+    }
 }
-    // stages {
+  // stages {
         // stage("Checkout") {   
         //     steps {               	 
         //         git branch: 'main', url: 'https://github.com/manikcloud/microservices-calculator.git'        	 
