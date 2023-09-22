@@ -23,9 +23,9 @@ pipeline {
 environment {
         DOCKER_IMAGE = "aksacrops.azurecr.io/calc:${env.BUILD_NUMBER}"
     }    
-    // tools {
-    //     maven 'my_mvn'
-    // }
+    tools {
+        maven 'my_mvn'
+    }
     
     stages {
         // stage("Checkout") {   
