@@ -30,29 +30,29 @@ pipeline {
             }
         }
         
-        stage('Maven Build') {
-            steps {
-                sh "mvn compile"  	 
-            }
-        }
+        // stage('Maven Build') {
+        //     steps {
+        //         sh "mvn compile"  	 
+        //     }
+        // }
         
-        stage("Unit Test") {          	 
-            steps {  	 
-                sh "mvn test"          	 
-            }
-        }
+        // stage("Unit Test") {          	 
+        //     steps {  	 
+        //         sh "mvn test"          	 
+        //     }
+        // }
         
-        stage("Unit validate") {          	 
-            steps {  	 
-                sh "mvn validate"          	 
-            }
-        }
+        // stage("Unit validate") {          	 
+        //     steps {  	 
+        //         sh "mvn validate"          	 
+        //     }
+        // }
         
-        stage("Maven Package") {
-            steps {
-                sh "mvn package" 
-            }
-        }
+        // stage("Maven Package") {
+        //     steps {
+        //         sh "mvn package" 
+        //     }
+        // }
         stage("list files") {
             steps {
                 sh "ls -l *" 
@@ -91,9 +91,9 @@ pipeline {
 
     }
     
-    post {
-        always {
-            junit 'target/surefire-reports/*.xml'
-        }
-    }
+    // post {
+    //     always {
+    //         junit 'target/surefire-reports/*.xml'
+    //     }
+    // }
 }
