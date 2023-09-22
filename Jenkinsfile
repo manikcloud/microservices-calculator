@@ -1,11 +1,9 @@
-def DOCKER_POD = "aksacrops.azurecr.io/dind-azcli:v1"
-
 pipeline {
     agent {
         kubernetes {
             inheritFrom 'jenkins-jenkins-agent'
             idleMinutes 5
-            yaml(readFile('jenkins-pod.yaml').replaceAll('\\${DOCKER_POD}', DOCKER_POD))
+            yaml(readFile('jenkins-pod.yaml').replaceAll('\\${DOCKER_POD}', 'aksacrops.azurecr.io/dind-azcli:v1'))
             defaultContainer 'maven'
         }
     }
