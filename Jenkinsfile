@@ -98,7 +98,7 @@ environment {
     }
     
     // post { 
-    //     always {
+    //     always {  
     //         junit 'target/surefire-reports/*.xml'
     //     }
     // }
