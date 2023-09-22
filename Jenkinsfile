@@ -5,16 +5,16 @@ pipeline {
             inheritFrom 'jenkins-jenkins-agent'
             idleMinutes 5
             yaml '''
-                apiVersion: v1
-                kind: Pod
-                spec:
+              apiVersion: v1
+              kind: Pod
+              spec:
                 restartPolicy: Never
                 containers:
-                    - name: docker
+                  - name: docker
                     image: aksacrops.azurecr.io/dind-azcli:v1
                     imagePullPolicy: IfNotPresent
                     securityContext:
-                        privileged: true
+                      privileged: true
             '''
             defaultContainer 'maven'
         }
