@@ -5,7 +5,10 @@ pipeline {
             idleMinutes 5
         }
     }
-    
+
+ environment {
+        DOCKER_IMAGE = "aksacrops.azurecr.io/calc:${env.BUILD_NUMBER}"
+    }    
     tools {
         maven 'my_mvn'
     }
@@ -51,6 +54,37 @@ pipeline {
                 sh "ls -l *" 
             }
         }
+
+        stage('Docker Login to ACR') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'acr-ops', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
+                    sh """
+                    docker login aksacrops.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
+                    """
+                }
+            }
+        }
+        // Assuming a stage to build the Docker image:
+        stage('Build Docker Image') {
+            steps {
+                sh """
+                docker build -t $DOCKER_IMAGE .
+                """
+            }
+        }
+        stage('Push Docker Image to ACR') {
+            steps {
+                sh """
+                docker push $DOCKER_IMAGE
+                """
+            }
+        }                
+        stage("Docker push") {
+            steps {
+                sh "docker build -t ap-calc:v1" 
+            }
+        }
+
     }
     
     post {
