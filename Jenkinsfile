@@ -95,12 +95,6 @@ environment {
                 """
             }
         }                
-        stage("Docker push") {
-            steps {
-                sh "docker build -t ap-calc:v1" 
-            }
-        }
-
     }
     
     // post {
