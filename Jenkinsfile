@@ -107,7 +107,7 @@ environment {
         stage('CD') {
             steps {
               container('docker') {
-                sh "helm upgrade --install prd-java-calc golden-chart/ -f app_values/java-calc/values.yaml"
+                sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
                 sh "helm ls -A"
         }
       
