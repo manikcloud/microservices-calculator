@@ -20,10 +20,27 @@ pipeline {
         }
     }
     stages {
+        stage('Git Details') {
+            steps {
+              sh "git clone https://github.com/manikcloud/microservices-calculator.git"
+            }
+        }        
+        stage('Get Commit ID') {
+            steps {
+                
+                dir('${WORKSPACE}/microservices-calculator/') {
+                    script {
+                        env.DOCKER_TAG = sh(script: 'git log --format="%h" -n 1', returnStdout: true).trim()
+                        env.DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.DOCKER_TAG}"
+                    }
+                }
+            }
+        }
+
         stage('CD') {
             steps {
                 container('kbctl-helm') {
-                    sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
+                    sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml --set=image.tag=${env.DOCKER_TAG}"
                     sh "helm ls -A"
                 }
             }
