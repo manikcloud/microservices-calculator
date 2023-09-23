@@ -11,11 +11,13 @@ pipeline {
                 containers:
                   - name: docker
                     image: aksacrops.azurecr.io/dind-azcli:v1
+                    command: ["tail", "-f", "/dev/null"]
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true
                   - name: dockerh
                     image: aksacrops.azurecr.io/kbctl-helm:v1
+                    command: ["tail", "-f", "/dev/null"]
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true                      
