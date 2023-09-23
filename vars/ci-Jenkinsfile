@@ -29,7 +29,7 @@
               sh "git clone https://github.com/manikcloud/microservices-calculator.git"
                 dir('${WORKSPACE}/microservices-calculator/') {
                   script {
-                      env.APP_NAME = 'cat pom.xml | xq -x //artifactId | head -1'
+                      env.APP_NAME = sh 'cat pom.xml | xq -x //artifactId | head -1'
                       env.ENVIRONMENT = 'prd'
                       env.APP_VERSION = sh 'cat pom.xml | xq -x //version | head -1'
                       // env.DOCKER_TAG = sh(script: 'git log --format="%h" -n 1', returnStdout: true).trim()
