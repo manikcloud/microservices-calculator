@@ -22,7 +22,7 @@ pipeline {
             '''
                      
 
-            defaultContainer 'mvn'
+            defaultContainer 'maven'
         }
     }
 
