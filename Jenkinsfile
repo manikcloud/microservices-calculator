@@ -14,13 +14,12 @@ pipeline {
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true
+                  - name: docker-kbctl-helm
+                    image: aksacrops.azurecr.io/kbctl-helm:v1
+                    imagePullPolicy: IfNotPresent
+                    securityContext:
+                      privileged: true                      
             '''
-            //       - name: docker-kbctl-helm
-            //         image: aksacrops.azurecr.io/kbctl-helm:v1
-            //         imagePullPolicy: IfNotPresent
-            //         securityContext:
-            //           privileged: true                      
-
             defaultContainer 'docker'
         }
     }
