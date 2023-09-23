@@ -33,11 +33,11 @@ pipeline {
 
  
   stages {
-        stage("Checkout") {   
-            steps {               	 
-                git branch: 'main', url: 'https://github.com/manikcloud/microservices-calculator.git'        	 
-            }    
-        }
+        // stage("Checkout") {   
+        //     steps {               	 
+        //         git branch: 'main', url: 'https://github.com/manikcloud/microservices-calculator.git'        	 
+        //     }    
+        // }
         
         stage('Maven install') {
             steps {
