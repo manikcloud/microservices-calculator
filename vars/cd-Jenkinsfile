@@ -12,7 +12,7 @@ pipeline {
                   - name: kbctl-helm
                     image: aksacrops.azurecr.io/kbctl-helm:v1
                     command: ["tail", "-f", "/dev/null"]
-                    imagePullPolicy: IfNotPresent
+                    imagePullPolicy: Always
                     securityContext:
                       privileged: true                      
             '''
