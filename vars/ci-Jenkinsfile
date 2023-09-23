@@ -12,10 +12,10 @@
                     - name: maven
                       image: aksacrops.azurecr.io/maven:jdk-11-slim
                       command: ["tail", "-f", "/dev/null"]
-                      imagePullPolicy: IfNotPresent
+                      imagePullPolicy: Always
                     - name: docker
                       image: docker:dind
-                      imagePullPolicy: IfNotPresent
+                      imagePullPolicy: Always
                       securityContext:
                         privileged: true
               '''
