@@ -59,7 +59,7 @@ pipeline {
         // }
         stage("Unit test") {          	 
             steps {  
-              container('docker') {
+              container('jnlp') {
                 dir('${WORKSPACE}/microservices-calculator/target/') {              	 
                   sh "junit 'surefire-reports/*.xml'"
                 } 
