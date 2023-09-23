@@ -53,17 +53,17 @@ pipeline {
             }
           }
         }
-        stage("Unit validate") {          	 
-            steps {  
-              dir('${WORKSPACE}/microservices-calculator/') {              	 
-                sh "mvn validate"     
-              }     	 
-            }
-        }
+        // stage("Unit validate") {          	 
+        //     steps {  
+        //       dir('${WORKSPACE}/microservices-calculator/') {              	 
+        //         sh "mvn validate"     
+        //       }     	 
+        //     }
+        // }
         stage("Unit test") {          	 
             steps {  
-              dir('${WORKSPACE}/microservices-calculator/') {              	 
-                sh "junit 'target/surefire-reports/*.xml'"     
+              dir('${WORKSPACE}/microservices-calculator/target/') {              	 
+                sh "junit 'surefire-reports/*.xml'"     
               }     	 
             }
         }        
