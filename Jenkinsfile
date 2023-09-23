@@ -80,11 +80,13 @@ pipeline {
 
         stage('Docker Login to ACR') {
             steps {
+               container('docker') {
                 withCredentials([usernamePassword(credentialsId: 'aksacrapp', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
                     sh """
                     docker login aksacrapp.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
                     """
                 }
+              }
             }
         }
         // Assuming a stage to build the Docker image: 
