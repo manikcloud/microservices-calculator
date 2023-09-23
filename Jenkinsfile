@@ -20,7 +20,7 @@ pipeline {
                     securityContext:
                       privileged: true                      
             '''
-            defaultContainer 'jnlp'
+            defaultContainer 'docker'
         }
     }
 
