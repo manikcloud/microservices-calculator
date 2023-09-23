@@ -102,17 +102,20 @@
           // Assuming a stage to build the Docker image: 
           stage('Build Docker Image') {
               steps {
-                container('docker') {
-                  dir('${WORKSPACE}/microservices-calculator/') { 
-                    env.DOCKER_TAG = sh(returStdout: true, script: 'git log --format="%h" -n 1')
-                    env.DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.DOCKER_TAG}"
-                    sh """
-                    docker build -t ${env.DOCKER_IMAGE} .
-                    """
+                  container('docker') {
+                      dir('${WORKSPACE}/microservices-calculator/') {
+                          script {
+                              env.DOCKER_TAG = sh(script: 'git log --format="%h" -n 1', returnStdout: true).trim()
+                              env.DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.DOCKER_TAG}"
+                          }
+                          sh """
+                          docker build -t ${env.DOCKER_IMAGE} .
+                          """
+                      }
                   }
-                }
               }
           }
+
           stage('Push Docker Image to ACR') {
               steps {
                 container('docker') {              
