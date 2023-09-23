@@ -1,133 +1,126 @@
-pipeline {
-    agent {
-        kubernetes {
-            inheritFrom 'jenkins-jenkins-agent'
-            idleMinutes 5
-            yaml '''
-              apiVersion: v1
-              kind: Pod
-              spec:
-                restartPolicy: Never
-                containers:
-                  - name: maven
-                    image: aksacrops.azurecr.io/maven:jdk-11-slim
-                    command: ["tail", "-f", "/dev/null"]
-                    imagePullPolicy: IfNotPresent
-                    securityContext:
-                      privileged: true                    
-                  - name: docker
-                    image: aksacrops.azurecr.io/dind-azcli:v1
-                    command: ["tail", "-f", "/dev/null"]
-                    imagePullPolicy: IfNotPresent
-                    securityContext:
-                      privileged: true
-            '''
-            defaultContainer 'maven'
-        }
-    }
-    environment {
-        DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.BUILD_NUMBER}"
+  pipeline {
+      agent {
+          kubernetes {
+              inheritFrom 'jenkins-jenkins-agent'
+              idleMinutes 5
+              yaml '''
+                apiVersion: v1
+                kind: Pod
+                spec:
+                  restartPolicy: Never
+                  containers:
+                    - name: maven
+                      image: aksacrops.azurecr.io/maven:jdk-11-slim
+                      command: ["tail", "-f", "/dev/null"]
+                      imagePullPolicy: IfNotPresent
+                      securityContext:
+                        privileged: true                    
+                    - name: docker
+                      image: aksacrops.azurecr.io/dind-azcli:v1
+                      command: ["tail", "-f", "/dev/null"]
+                      imagePullPolicy: IfNotPresent
+                      securityContext:
+                        privileged: true
+              '''
+              defaultContainer 'maven'
+          }
+      }
+      environment {
+          DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.BUILD_NUMBER}"
 
-    }   
-     
-      stages {
-        stage('Git Checkout') {
-          steps {
-            sh "git clone https://github.com/manikcloud/microservices-calculator.git"
-          }
-        }
-        stage('Build') {
-          steps {
-            dir('${WORKSPACE}/microservices-calculator/') {
-              sh "mvn clean install"
-            }
-          }
-        }
-        stage("Unit Test") {          	 
-            steps {  	 
-              dir('${WORKSPACE}/microservices-calculator/') {              
-                sh "mvn test"          	 
-            }
-          }
-        }
-        // stage("Unit validate") {          	 
-        //     steps {  
-        //       dir('${WORKSPACE}/microservices-calculator/') {              	 
-        //         sh "mvn validate"     
-        //       }     	 
-        //     }
-        // }
-        // stage("Unit test") {          	 
-        //     steps {  
-        //       container('jnlp') {
-        //         dir('${WORKSPACE}/microservices-calculator/target/') {              	 
-        //           sh "junit 'surefire-reports/*.xml'"
-        //         } 
-        //       }     	 
-        //     }
-        // }        
-        stage("Package") {          	 
-            steps {  
-              dir('${WORKSPACE}/microservices-calculator/') {              	 
-                sh "mvn package"     
-              }     	 
-            }
-        }
-
-        stage('checkstyle scan') {
+      }   
+      
+        stages {
+          stage('Git Checkout') {
             steps {
-              dir('${WORKSPACE}/microservices-calculator/') { 
-                sh 'mvn checkstyle:checkstyle'
-                recordIssues tools: [checkStyle(pattern: '**/checkstyle-result.xml')]
+              sh "git clone https://github.com/manikcloud/microservices-calculator.git"
+            }
+          }
+          stage('Build') {
+            steps {
+              dir('${WORKSPACE}/microservices-calculator/') {
+                sh "mvn clean install"
               }
             }
-        }
-          // stage("SonarQube Scan") {
-          //     steps {
-          //       withSonarQubeEnv('sonarqube') {
-          //           dir('${WORKSPACE}/microservices-calculator/') { 
-          //               sh "mvn verify sonar:sonar -Dsonar.host.url=http://10.0.207.87:9000"
-                      
-          //           }
-          //       }
-          //   } 
-        // }    
-        stage("list files") {
-            steps {
-                sh "ls -l *" 
+          }
+          stage("Unit Test") {               
+              steps {       
+                dir('${WORKSPACE}/microservices-calculator/') {              
+                  sh "mvn test"               
+              }
             }
+          }
+          stage("Package") {               
+              steps {  
+                dir('${WORKSPACE}/microservices-calculator/') {                   
+                  sh "mvn package"     
+                }          
+              }
+          }
+
+          stage('checkstyle scan') {
+              steps {
+                dir('${WORKSPACE}/microservices-calculator/') { 
+                  sh 'mvn checkstyle:checkstyle'
+                  recordIssues tools: [checkStyle(pattern: '**/checkstyle-result.xml')]
+                }
+              }
+          }
+            // stage("SonarQube Scan") {
+            //     steps {
+            //       withSonarQubeEnv('sonarqube') {
+            //           dir('${WORKSPACE}/microservices-calculator/') { 
+            //               sh "mvn verify sonar:sonar -Dsonar.host.url=http://10.0.207.87:9000"
+                        
+            //           }
+            //       }
+            //   } 
+          // } 
+
+          // stage("Quality Gate") {
+          //   steps {
+          //     timeout(time: 2, unit: 'MINUTES') {
+          //       waitForQualityGate abortPipeline: true
+          //     }
+          //   }
+          // }   
+
+          stage("list files") {
+              steps {
+                  sh "ls -l *" 
+              }
+          }
+
+          stage('Docker Login to ACR') { 
+              steps {
+                  withCredentials([usernamePassword(credentialsId: 'aksacrapp', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
+                      container('docker') {
+                      sh """
+                      docker login aksacrapp.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
+                      """
+                      }
+                  }
+              }
+          }
+          // Assuming a stage to build the Docker image: 
+          stage('Build Docker Image') {
+              steps {
+                container('docker') {
+                  sh """
+                  docker build -t $DOCKER_IMAGE .
+                  """
+                }
+              }
+          }
+          stage('Push Docker Image to ACR') {
+              steps {
+                container('docker') {              
+                  sh """
+                  docker push $DOCKER_IMAGE
+                  """
+                }
+              }
+          }                
+
         }
-      }
-
-      // post {
-      //     always {
-      //         junit 'target/surefire-reports/*.xml'
-      //     }
-      // }      
-}
-
-        // stage('Docker Login to ACR') { 
-        //     steps {
-        //         withCredentials([usernamePassword(credentialsId: 'aksacrapp', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
-        //             sh """
-        //             docker login aksacrapp.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
-        //             """
-        //         }
-        //     }
-        // }
-        // // Assuming a stage to build the Docker image: 
-        // stage('Build Docker Image') {
-        //     steps {
-        //         sh """
-        //         docker build -t $DOCKER_IMAGE .
-        //         """
-        //     }
-        // }
-        // stage('Push Docker Image to ACR') {
-        //     steps {
-        //         sh """
-        //         docker push $DOCKER_IMAGE
-        //         """
-        //     }
-        // }                
-
+  }
