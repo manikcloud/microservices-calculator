@@ -90,11 +90,11 @@ pipeline {
         }
       }
 
-      post {
-          always {
-              junit 'target/surefire-reports/*.xml'
-          }
-      }      
+      // post {
+      //     always {
+      //         junit 'target/surefire-reports/*.xml'
+      //     }
+      // }      
 }
 
         // stage('Docker Login to ACR') { 
