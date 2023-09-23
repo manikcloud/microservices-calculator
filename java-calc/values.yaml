@@ -36,7 +36,7 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  type: NodePort
   port: 80
   containerPort: 8080
 
