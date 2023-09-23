@@ -11,6 +11,7 @@ pipeline {
                 containers:
                   - name: docker
                     image: aksacrops.azurecr.io/dind-azcli:v1
+                    command: ["tail", "-f", "/dev/null"]
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true
