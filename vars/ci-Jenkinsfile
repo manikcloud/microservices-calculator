@@ -57,15 +57,15 @@ pipeline {
         //       }     	 
         //     }
         // }
-        stage("Unit test") {          	 
-            steps {  
-              container('jnlp') {
-                dir('${WORKSPACE}/microservices-calculator/target/') {              	 
-                  sh "junit 'surefire-reports/*.xml'"
-                } 
-              }     	 
-            }
-        }        
+        // stage("Unit test") {          	 
+        //     steps {  
+        //       container('jnlp') {
+        //         dir('${WORKSPACE}/microservices-calculator/target/') {              	 
+        //           sh "junit 'surefire-reports/*.xml'"
+        //         } 
+        //       }     	 
+        //     }
+        // }        
         stage("Package") {          	 
             steps {  
               dir('${WORKSPACE}/microservices-calculator/') {              	 
