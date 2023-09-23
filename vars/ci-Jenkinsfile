@@ -22,19 +22,18 @@
               defaultContainer 'maven'
           }
       }
-      environment {
-          DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.BUILD_NUMBER}"
-
-      }   
-      
+   
         stages {
           stage('Git Checkout') {
             steps {
               sh "git clone https://github.com/manikcloud/microservices-calculator.git"
                 dir('${WORKSPACE}/microservices-calculator/') {
                   script {
-                      env.DOCKER_TAG = sh(script: 'git log --format="%h" -n 1', returnStdout: true).trim()
-                      env.DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.DOCKER_TAG}"
+                      env.APP_NAME = 'cat pom.xml | xq -x //artifactId | head -1'
+                      env.ENVIRONMENT = 'prd'
+                      env.APP_VERSION = sh 'cat pom.xml | xq -x //version | head -1'
+                      // env.DOCKER_TAG = sh(script: 'git log --format="%h" -n 1', returnStdout: true).trim()
+                      env.DOCKER_IMAGE = "aksacrapp.azurecr.io/${env.ENVIRONMENT}-${env.APP_NAME}:${env.APP_VERSION}"
                 }
               }
             }

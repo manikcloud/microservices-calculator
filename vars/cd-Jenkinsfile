@@ -40,7 +40,7 @@ pipeline {
         stage('CD') {
             steps {
                 container('kbctl-helm') {
-                    sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml --set=image.tag=${env.DOCKER_TAG}"
+                    sh "helm upgrade --install ${env.ENVIRONMENT}-${env.APP_NAME} golden-chart/ -n ${env.ENVIRONMENT}-${env.APP_NAME} -f  ${env.ENVIRONMENT}/${env.APP_NAME}/values.yaml --set=image.tag=${env.DOCKER_TAG}"
                     sh "helm ls -A"
                 }
             }
