@@ -82,40 +82,40 @@ pipeline {
             steps {
                withCredentials([usernamePassword(credentialsId: 'aksacrapp', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
                     container('docker') {
-                    sh """
-                    docker login aksacrapp.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
-                    """
-                }
+                        sh """
+                        docker login aksacrapp.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
+                        """
+                  }
               }
             }
         }
         // Assuming a stage to build the Docker image: 
         stage('Build Docker Image') {
             steps {
-              container('docker') {
-                sh """
-                docker build -t $DOCKER_IMAGE .
-                """
-              }
+                container('docker') {
+                    sh """
+                    docker build -t $DOCKER_IMAGE .
+                    """
+                }
             }
         }
         stage('Push Docker Image to ACR') {
             steps {
-              container('docker') {
-                sh """
-                docker push $DOCKER_IMAGE
-                """
-              }
+                container('docker') {
+                    sh """
+                    docker push $DOCKER_IMAGE
+                    """
+                }
             }
         }                
     
-     stage('CD') {
-          steps {
-              container('dockerh') { // or 'docker-kbctl-helm', depending on which container you want to use
-                  sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
-                  sh "helm ls -A"
-              }
-          }
-      }
+    //  stage('CD') {
+    //       steps {
+    //           container('dockerh') { // or 'docker-kbctl-helm', depending on which container you want to use
+    //               sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
+    //               sh "helm ls -A"
+    //           }
+    //       }
+    //   }
     }
 }
