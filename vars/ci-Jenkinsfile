@@ -110,9 +110,11 @@
           stage('Build Docker Image') {
               steps {
                   container('docker') {
-                    sh """
-                    docker build -t ${env.DOCKER_IMAGE} .
-                    """
+                    dir('${WORKSPACE}/microservices-calculator/') {
+                      sh """
+                      docker build -t ${env.DOCKER_IMAGE} .
+                      """
+                    }
                   }
                 }
           }
