@@ -18,14 +18,15 @@ pipeline {
             defaultContainer 'dockerh'
         }
     }
-    stage('CD') {
-        steps {
-            container('dockerh') {
-                // Check Helm version as a debug step
-                sh "helm version"
-                sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
-                sh "helm ls -A"
-            }
-        }
-    }
+
+  stages('CD') {
+      steps {
+          container('dockerh') {
+              // Check Helm version as a debug step
+              sh "helm version"
+              sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
+              sh "helm ls -A"
+          }
+      }
+  }
 }
