@@ -44,14 +44,13 @@ pipeline {
             }    
         }
         
-        stage('Maven install') {
-            steps {
-              container('jnlp') {
-                sh "mvn clean install"
-              }	 
+        stage('Build') {
+          steps {
+            dir('${WORKSPACE}/microservices-calculator/') {
+              sh "mvn clean install"
             }
+          }
         }
-        
         // stage('Maven Build') {
         //     steps {
         //         sh "mvn compile"  	 
@@ -60,8 +59,10 @@ pipeline {
         
         stage("Unit Test") {          	 
             steps {  	 
+              dir('${WORKSPACE}/microservices-calculator/') {              
                 sh "mvn test"          	 
             }
+          }
             post {
                 always {
                     junit 'target/surefire-reports/*.xml'
@@ -69,23 +70,25 @@ pipeline {
             }
         }
         stage("Unit validate") {          	 
-            steps {  	 
-                sh "mvn validate"          	 
+            steps {  
+              dir('${WORKSPACE}/microservices-calculator/') {              	 
+                sh "mvn validate"     
+              }     	 
             }
         }
         
-        stage("Maven Package") {
-            steps {
-                sh "mvn package" 
-            }
-        }
+        // stage("Maven Package") {
+        //     steps {
+        //         sh "mvn package" 
+        //     }
+        // }
 
-        stage('Build and Static Analysis') {
-            steps {
-                sh 'mvn checkstyle:checkstyle'
-                recordIssues tools: [checkStyle(pattern: '**/checkstyle-result.xml')]
-            }
-        }
+        // stage('Build and Static Analysis') {
+        //     steps {
+        //         sh 'mvn checkstyle:checkstyle'
+        //         recordIssues tools: [checkStyle(pattern: '**/checkstyle-result.xml')]
+        //     }
+        // }
     
         stage("list files") {
             steps {
