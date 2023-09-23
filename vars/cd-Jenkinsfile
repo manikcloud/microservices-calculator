@@ -46,7 +46,7 @@ pipeline {
         stage('CD') {
             steps {
                 container('kbctl-helm') {
-                    sh "helm upgrade --install ${env.ENVIRONMENT}-${env.APP_NAME} golden-chart/ -n ${env.ENVIRONMENT}-${env.APP_NAME} -f  ${env.ENVIRONMENT}/${env.APP_NAME}/values.yaml --set=image.name=${env.ENVIRONMENT}-${env.APP_NAME} --set=image.tag=${env.APP_VERSION}"
+                    sh "helm upgrade --install ${env.ENVIRONMENT}-${env.APP_NAME} golden-chart/ -n ${env.ENVIRONMENT}-${env.APP_NAME} -f  ${env.ENVIRONMENT}/${env.APP_NAME}/values.yaml --set=image.name=${env.ENVIRONMENT}-${env.APP_NAME} --set=image.tag=${env.APP_VERSION} --create-namespace"
                     sh "helm ls -A"
                 }
             }
