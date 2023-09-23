@@ -30,7 +30,7 @@ pipeline {
     tools {
         maven 'my_mvn'
     }
-    stages {
+
  
   stages {
         stage("Checkout") {   
@@ -100,7 +100,7 @@ pipeline {
                 """
             }
         }                
-    }
+    
     //  stage('CD') {
     //       steps {
     //           container('docker-kbctl-helm') { // or 'docker-kbctl-helm', depending on which container you want to use
