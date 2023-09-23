@@ -59,8 +59,12 @@ pipeline {
             steps {  	 
                 sh "mvn test"          	 
             }
+            post {
+                always {
+                    junit 'target/surefire-reports/*.xml'
+                }
+            }
         }
-        
         stage("Unit validate") {          	 
             steps {  	 
                 sh "mvn validate"          	 
@@ -88,11 +92,6 @@ pipeline {
         stage("list files") {
             steps {
                 sh "ls -l *" 
-            }
-        }
-        post {
-            always {
-                junit 'target/surefire-reports/*.xml'
             }
         }
       }
