@@ -32,8 +32,10 @@
                       env.APP_NAME = sh 'cat pom.xml | xq -x //artifactId | head -1'
                       env.ENVIRONMENT = 'prd'
                       env.APP_VERSION = sh 'cat pom.xml | xq -x //version | head -1'
+                      env.IMAGE_NAME = "${env.ENVIRONMENT}-${env.APP_NAME}:${env.APP_VERSION}"
+                      echo "${env.IMAGE_NAME}"
                       // env.DOCKER_TAG = sh(script: 'git log --format="%h" -n 1', returnStdout: true).trim()
-                      env.DOCKER_IMAGE = "aksacrapp.azurecr.io/${env.ENVIRONMENT}-${env.APP_NAME}:${env.APP_VERSION}"
+                      env.DOCKER_IMAGE = "aksacrapp.azurecr.io/${env.IMAGE_NAME}"
                 }
               }
             }
