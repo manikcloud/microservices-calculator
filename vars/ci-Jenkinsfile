@@ -15,26 +15,26 @@ pipeline {
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true
+                  - name: maven
+                    image: aksacrops.azurecr.io/maven:jdk-11-slim
+                    command: ["tail", "-f", "/dev/null"]
+                    imagePullPolicy: IfNotPresent
             '''
-            //       - name: docker-kbctl-helm
-            //         image: aksacrops.azurecr.io/kbctl-helm:v1
-            //         imagePullPolicy: IfNotPresent
-            //         securityContext:
-            //           privileged: true                      
+                     
 
-            defaultContainer 'docker'
+            defaultContainer 'mvn'
         }
     }
 
     environment {
         DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.BUILD_NUMBER}"
-        JAVA_HOME = "${tool name: 'my_jdk', type: 'JDK'}"
+        // JAVA_HOME = "${tool name: 'my_jdk', type: 'JDK'}"
 
     }    
-    tools {
-        maven 'my_mvn'
-         jdk 'my_jdk'
-    }
+    // tools {
+    //     maven 'my_mvn'
+    //      jdk 'my_jdk'
+    // }
 
  
   stages {
