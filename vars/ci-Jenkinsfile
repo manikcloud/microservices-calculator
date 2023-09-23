@@ -71,19 +71,22 @@ pipeline {
               }     	 
             }
         }
-        
-        // stage("Maven Package") {
-        //     steps {
-        //         sh "mvn package" 
-        //     }
-        // }
+        stage("Package") {          	 
+            steps {  
+              dir('${WORKSPACE}/microservices-calculator/') {              	 
+                sh "mvn package"     
+              }     	 
+            }
+        }
 
-        // stage('Build and Static Analysis') {
-        //     steps {
-        //         sh 'mvn checkstyle:checkstyle'
-        //         recordIssues tools: [checkStyle(pattern: '**/checkstyle-result.xml')]
-        //     }
-        // }
+        stage('Build and Static Analysis') {
+            steps {
+              dir('${WORKSPACE}/microservices-calculator/') { 
+                sh 'mvn checkstyle:checkstyle'
+                recordIssues tools: [checkStyle(pattern: '**/checkstyle-result.xml')]
+              }
+            }
+        }
     
         stage("list files") {
             steps {
