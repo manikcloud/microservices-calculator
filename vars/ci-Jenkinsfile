@@ -49,11 +49,11 @@ pipeline {
             }
         }
         
-        stage('Maven Build') {
-            steps {
-                sh "mvn compile"  	 
-            }
-        }
+        // stage('Maven Build') {
+        //     steps {
+        //         sh "mvn compile"  	 
+        //     }
+        // }
         
         stage("Unit Test") {          	 
             steps {  	 
