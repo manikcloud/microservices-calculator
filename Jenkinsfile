@@ -25,89 +25,89 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE = "aksacrops.azurecr.io/calc:${env.BUILD_NUMBER}"
+        DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.BUILD_NUMBER}"
     }    
     tools {
         maven 'my_mvn'
     }
     stages {
-      stage('CD') {
-          steps {
-              container('docker-kbctl-helm') { // or 'docker-kbctl-helm', depending on which container you want to use
-                  sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
-                  sh "helm ls -A"
-              }
-          }
-      }
-    }
-}
-
-  // stages {
-        // stage("Checkout") {   
-        //     steps {               	 
-        //         git branch: 'main', url: 'https://github.com/manikcloud/microservices-calculator.git'        	 
-        //     }    
+ 
+  stages {
+        stage("Checkout") {   
+            steps {               	 
+                git branch: 'main', url: 'https://github.com/manikcloud/microservices-calculator.git'        	 
+            }    
+        }
+        
+        stage('Maven install') {
+            steps {
+              container('jnlp') {
+                sh "mvn clean install"
+              }	 
+            }
+        }
+        
+        // stage('Maven Build') {
+        //     steps {
+        //         sh "mvn compile"  	 
+        //     }
         // }
         
-    //     stage('Maven install') {
-    //         steps {
-    //           container('jnlp') {
-    //             sh "mvn clean install"
-    //           }	 
-    //         }
-    //     }
+        // stage("Unit Test") {          	 
+        //     steps {  	 
+        //         sh "mvn test"          	 
+        //     }
+        // }
         
-    //     // stage('Maven Build') {
-    //     //     steps {
-    //     //         sh "mvn compile"  	 
-    //     //     }
-    //     // }
+        // stage("Unit validate") {          	 
+        //     steps {  	 
+        //         sh "mvn validate"          	 
+        //     }
+        // }
         
-    //     // stage("Unit Test") {          	 
-    //     //     steps {  	 
-    //     //         sh "mvn test"          	 
-    //     //     }
-    //     // }
-        
-    //     // stage("Unit validate") {          	 
-    //     //     steps {  	 
-    //     //         sh "mvn validate"          	 
-    //     //     }
-    //     // }
-        
-    //     // stage("Maven Package") {
-    //     //     steps {
-    //     //         sh "mvn package" 
-    //     //     }
-    //     // }
-    //     stage("list files") {
-    //         steps {
-    //             sh "ls -l *" 
-    //         }
-    //     }
+        // stage("Maven Package") {
+        //     steps {
+        //         sh "mvn package" 
+        //     }
+        // }
+        stage("list files") {
+            steps {
+                sh "ls -l *" 
+            }
+        }
 
-    //     stage('Docker Login to ACR') {
-    //         steps {
-    //             withCredentials([usernamePassword(credentialsId: 'acr-ops', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
-    //                 sh """
-    //                 docker login aksacrops.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
-    //                 """
-    //             }
-    //         }
-    //     }
-    //     // Assuming a stage to build the Docker image:
-    //     stage('Build Docker Image') {
-    //         steps {
-    //             sh """
-    //             docker build -t $DOCKER_IMAGE .
-    //             """
-    //         }
-    //     }
-    //     stage('Push Docker Image to ACR') {
-    //         steps {
-    //             sh """
-    //             docker push $DOCKER_IMAGE
-    //             """
-    //         }
-    //     }                
-    // }
+        stage('Docker Login to ACR') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'acrapp', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
+                    sh """
+                    docker login aksacrops.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
+                    """
+                }
+            }
+        }
+        // Assuming a stage to build the Docker image:
+        stage('Build Docker Image') {
+            steps {
+                sh """
+                docker build -t $DOCKER_IMAGE .
+                """
+            }
+        }
+        stage('Push Docker Image to ACR') {
+            steps {
+                sh """
+                docker push $DOCKER_IMAGE
+                """
+            }
+        }                
+    }
+    //  stage('CD') {
+    //       steps {
+    //           container('docker-kbctl-helm') { // or 'docker-kbctl-helm', depending on which container you want to use
+    //               sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
+    //               sh "helm ls -A"
+    //           }
+    //       }
+    //   }
+    }
+}
