@@ -22,12 +22,9 @@ pipeline {
                     securityContext:
                       privileged: true
             '''
-                     
-
             defaultContainer 'maven'
         }
     }
-
     environment {
         DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.BUILD_NUMBER}"
 
@@ -62,8 +59,10 @@ pipeline {
         // }
         stage("Unit test") {          	 
             steps {  
-              dir('${WORKSPACE}/microservices-calculator/target/') {              	 
-                sh "junit 'surefire-reports/*.xml'"     
+              container('docker') {
+                dir('${WORKSPACE}/microservices-calculator/target/') {              	 
+                  sh "junit 'surefire-reports/*.xml'"
+                } 
               }     	 
             }
         }        
