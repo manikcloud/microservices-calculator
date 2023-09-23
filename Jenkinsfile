@@ -14,7 +14,7 @@ pipeline {
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true
-                  - name: docker-kbctl-helm
+                  - name: dockerh
                     image: aksacrops.azurecr.io/kbctl-helm:v1
                     imagePullPolicy: IfNotPresent
                     securityContext:
