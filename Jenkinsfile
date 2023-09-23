@@ -89,16 +89,16 @@ pipeline {
               }
             }
         }
-        // Assuming a stage to build the Docker image: 
         stage('Build Docker Image') {
             steps {
-                // container('docker') {
+                container('docker') {
                     sh """
                     docker build -t $DOCKER_IMAGE .
                     """
-                // }
+                }
             }
         }
+        
         stage('Push Docker Image to ACR') {
             steps {
                 container('docker') {
@@ -107,7 +107,7 @@ pipeline {
                     """
                 }
             }
-        }                
+        } 
     
     //  stage('CD') {
     //       steps {
