@@ -11,6 +11,7 @@ pipeline {
                 containers:
                   - name: dockerh
                     image: aksacrops.azurecr.io/kbctl-helm:v1
+                    command: ["tail", "-f", "/dev/null"]
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true                      
