@@ -3,24 +3,25 @@ pipeline {
         kubernetes {
             inheritFrom 'jenkins-jenkins-agent'
             idleMinutes 5
-            // yaml '''
-            //   apiVersion: v1
-            //   kind: Pod
-            //   spec:
-            //     restartPolicy: Never
-            //     containers:
-            //       - name: docker-azcli
-            //         image: aksacrops.azurecr.io/dind-azcli:v1
-            //         imagePullPolicy: IfNotPresent
-            //         securityContext:
-            //           privileged: true
+            yaml '''
+              apiVersion: v1
+              kind: Pod
+              spec:
+                restartPolicy: Never
+                containers:
+                  - name: docker
+                    image: aksacrops.azurecr.io/dind-azcli:v1
+                    imagePullPolicy: IfNotPresent
+                    securityContext:
+                      privileged: true
+            '''
             //       - name: docker-kbctl-helm
             //         image: aksacrops.azurecr.io/kbctl-helm:v1
             //         imagePullPolicy: IfNotPresent
             //         securityContext:
             //           privileged: true                      
-            // '''
-            // defaultContainer 'docker-azcli'
+
+            defaultContainer 'docker'
         }
     }
 
