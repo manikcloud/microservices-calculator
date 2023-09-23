@@ -85,7 +85,7 @@ pipeline {
                 }
             }
         }
-        // Assuming a stage to build the Docker image:
+        // Assuming a stage to build the Docker image: 
         stage('Build Docker Image') {
             steps {
                 sh """
