@@ -11,18 +11,17 @@ pipeline {
                 containers:
                   - name: docker
                     image: aksacrops.azurecr.io/dind-azcli:v1
-                    command: ["tail", "-f", "/dev/null"]
                     imagePullPolicy: IfNotPresent
                     securityContext:
                       privileged: true
-                  - name: dockerh
-                    image: aksacrops.azurecr.io/kbctl-helm:v1
-                    command: ["tail", "-f", "/dev/null"]
-                    imagePullPolicy: IfNotPresent
-                    securityContext:
-                      privileged: true                      
             '''
-            defaultContainer 'jnlp'
+            //       - name: docker-kbctl-helm
+            //         image: aksacrops.azurecr.io/kbctl-helm:v1
+            //         imagePullPolicy: IfNotPresent
+            //         securityContext:
+            //           privileged: true                      
+
+            defaultContainer 'docker'
         }
     }
 
@@ -44,7 +43,7 @@ pipeline {
         stage('Maven install') {
             steps {
               container('jnlp') {
-                sh "mvn install"
+                sh "mvn clean install"
               }	 
             }
         }
@@ -80,38 +79,32 @@ pipeline {
 
         stage('Docker Login to ACR') {
             steps {
-               withCredentials([usernamePassword(credentialsId: 'aksacrapp', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
-                    container('docker') {
-                        sh """
-                        docker login aksacrapp.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
-                        """
-                  }
-              }
+                withCredentials([usernamePassword(credentialsId: 'aksacrapp', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
+                    sh """
+                    docker login aksacrapp.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
+                    """
+                }
             }
         }
+        // Assuming a stage to build the Docker image: 
         stage('Build Docker Image') {
             steps {
-                container('docker') {
-                    sh """
-                    docker build -t $DOCKER_IMAGE .
-                    """
-                }
+                sh """
+                docker build -t $DOCKER_IMAGE .
+                """
             }
         }
-        
         stage('Push Docker Image to ACR') {
             steps {
-                container('docker') {
-                    sh """
-                    docker push $DOCKER_IMAGE
-                    """
-                }
+                sh """
+                docker push $DOCKER_IMAGE
+                """
             }
-        } 
+        }                
     
     //  stage('CD') {
     //       steps {
-    //           container('dockerh') { // or 'docker-kbctl-helm', depending on which container you want to use
+    //           container('docker-kbctl-helm') { // or 'docker-kbctl-helm', depending on which container you want to use
     //               sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
     //               sh "helm ls -A"
     //           }
