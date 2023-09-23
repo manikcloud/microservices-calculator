@@ -81,7 +81,7 @@ pipeline {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'aksacrapp', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
                     sh """
-                    docker login aksacrops.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
+                    docker login aksacrapp.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
                     """
                 }
             }
