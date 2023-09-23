@@ -9,7 +9,7 @@ pipeline {
               spec:
                 restartPolicy: Never
                 containers:
-                  - name: dockerh
+                  - name: kbctl-helm
                     image: aksacrops.azurecr.io/kbctl-helm:v1
                     command: ["tail", "-f", "/dev/null"]
                     imagePullPolicy: IfNotPresent
@@ -22,7 +22,7 @@ pipeline {
     stages {
         stage('CD') {
             steps {
-                container('dockerh') {
+                container('kbctl-helm') {
                     sh "helm upgrade --install prd-java-calc golden-chart/ -f java-calc/values.yaml"
                     sh "helm ls -A"
                 }

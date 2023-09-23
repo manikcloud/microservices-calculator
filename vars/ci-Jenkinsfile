@@ -104,8 +104,10 @@
               steps {
                 container('docker') {
                   dir('${WORKSPACE}/microservices-calculator/') { 
+                    env.DOCKER_TAG = sh(returStdout: true, script: 'git log --format="%h" -n 1')
+                    env.DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.DOCKER_TAG}"
                     sh """
-                    docker build -t $DOCKER_IMAGE .
+                    docker build -t ${env.DOCKER_IMAGE} .
                     """
                   }
                 }
@@ -115,11 +117,10 @@
               steps {
                 container('docker') {              
                   sh """
-                  docker push $DOCKER_IMAGE
+                  docker push ${env.DOCKER_IMAGE}
                   """
                 }
               }
           }                
-
         }
   }
