@@ -13,6 +13,8 @@ pipeline {
                     image: aksacrops.azurecr.io/maven:jdk-11-slim
                     command: ["tail", "-f", "/dev/null"]
                     imagePullPolicy: IfNotPresent
+                    securityContext:
+                      privileged: true                    
                   - name: docker
                     image: aksacrops.azurecr.io/dind-azcli:v1
                     command: ["tail", "-f", "/dev/null"]
@@ -28,22 +30,15 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "aksacrapp.azurecr.io/calc:${env.BUILD_NUMBER}"
-        // JAVA_HOME = "${tool name: 'my_jdk', type: 'JDK'}"
 
-    }    
-    // tools {
-    //     maven 'my_mvn'
-    //      jdk 'my_jdk'
-    // }
-
- 
-  stages {
-        stage("Checkout") {   
-            steps {               	 
-                git branch: 'main', url: 'https://github.com/manikcloud/microservices-calculator.git'        	 
-            }    
+    }   
+     
+      stages {
+        stage('Git Checkout') {
+          steps {
+            sh "git clone https://github.com/manikcloud/microservices-calculator.git"
+          }
         }
-        
         stage('Build') {
           steps {
             dir('${WORKSPACE}/microservices-calculator/') {
