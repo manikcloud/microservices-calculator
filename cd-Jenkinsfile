@@ -15,7 +15,7 @@ pipeline {
                     securityContext:
                       privileged: true                      
             '''
-            defaultContainer 'dockerh'
+            defaultContainer 'jnlp'
         }
     }
     stages {
