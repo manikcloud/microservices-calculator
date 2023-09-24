@@ -7,7 +7,7 @@
     </head>
     <body>
         <div class="container">
-            <h1>Manik Calculator</h1>
+            <h1>Manik Calculator-1</h1>
             <form action="calculate" method="post">
                 <div class="row">
                     <label for="num1">Number 1:</label>
