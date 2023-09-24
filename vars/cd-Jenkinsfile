@@ -39,7 +39,6 @@ pipeline {
                             env.APP_VERSION = sh(script: 'cat pom.xml | xq -x //version | head -1', returnStdout: true).trim()
                             env.IMAGE_NAME = "${env.ENVIRONMENT}-${env.APP_NAME}:${env.APP_VERSION}"
                             echo "${env.IMAGE_NAME}"
-                            // env.DOCKER_TAG = sh(script: 'git log --format="%h" -n 1', returnStdout: true).trim()
                             env.DOCKER_IMAGE = "${env.ACR_REPO}/${env.IMAGE_NAME}"
                         }
                     }
@@ -47,29 +46,20 @@ pipeline {
             }
         }
 
-            stage('Deployment on AKS') {
-                steps {
-                    container('kbctl-helm') {
-                        sh "helm upgrade --install ${env.ENVIRONMENT}-${env.APP_NAME} golden-chart/ " +
-                        "-n ${env.ENVIRONMENT}-${env.APP_NAME} " +
-                        "-f ${env.ENVIRONMENT}/${env.APP_NAME}/values.yaml " +
-                        "--set=image.repository=${env.ACR_REPO}/${env.ENVIRONMENT}-${env.APP_NAME} " +
-                        "--set=image.tag=${env.APP_VERSION} " +
-                        "--create-namespace"
-                        
-                        sh 'helm ls -A'
-                    }
+        stage('Deployment on AKS') {
+            steps {
+                container('kbctl-helm') {
+                    sh "helm upgrade --install ${env.ENVIRONMENT}-${env.APP_NAME} golden-chart/ " +
+                    "-n ${env.ENVIRONMENT}-${env.APP_NAME} " +
+                    "-f ${env.ENVIRONMENT}/${env.APP_NAME}/values.yaml " +
+                    "--set=image.repository=${env.ACR_REPO}/${env.ENVIRONMENT}-${env.APP_NAME} " +
+                    "--set=image.tag=${env.APP_VERSION} " +
+                    "--set=fullnameOverride=${env.ENVIRONMENT}-${env.APP_NAME} " +
+                    "--create-namespace"
+                    
+                    sh 'helm ls -A'
                 }
             }
-        
-            // stage('App URL') {
-            //     steps {
-            //         container('App URL') {
-            //             sh "export NODE_PORT=$(kubectl get --namespace ${env.ENVIRONMENT}-${env.APP_NAME} -o jsonpath=\"{.spec.ports[0].nodePort}\" services/${env.ENVIRONMENT}-${env.APP_NAME}-svc) && " +
-            //             "export NODE_IP=$(kubectl get nodes --namespace ${env.ENVIRONMENT}-${env.APP_NAME} -o jsonpath=\"{.items[0].status.addresses[0].address}\") && " +
-            //             "echo http://$NODE_IP:$NODE_PORT"
-            //         }
-            //     }
-            // }
         }
     }
+}
