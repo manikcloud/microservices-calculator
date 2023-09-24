@@ -73,16 +73,15 @@
                 }
               }
           }
-            // stage("SonarQube Scan") {
-            //     steps {
-            //       withSonarQubeEnv('sonarqube') {
-            //           dir("${WORKSPACE}/${env.APP_REPO_NAME}/") { 
-            //               sh "mvn verify sonar:sonar -Dsonar.host.url=http://10.0.207.87:9000"
-                        
-            //           }
-            //       }
-            //   } 
-          // } 
+            stage("SonarQube Scan") {
+                steps {
+                  withSonarQubeEnv('sonarqube') {
+                      dir("${WORKSPACE}/${env.APP_REPO_NAME}/") { 
+                          sh "mvn verify sonar:sonar -Dsonar.host.url=http://3.84.119.54:9000"                        
+                      }
+                  }
+              } 
+          } 
 
           // stage("Quality Gate") {
           //   steps {
