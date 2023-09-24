@@ -19,16 +19,19 @@ pipeline {
             defaultContainer 'jnlp'
         }
     }
+    environment {
+        APP_REPO_NAME = 'microservices-calculator'
+    }    
     stages {
-        stage('Git Details') {
+        stage('APP Details') {
             steps {
-              sh "git clone https://github.com/manikcloud/microservices-calculator.git"
+              sh "git clone https://github.com/manikcloud/${env.APP_REPO_NAME}.git"
             }
         }        
-        stage('Get Commit ID') {
+        stage('App Image Selection') {
             steps {
                 container('kbctl-helm') {
-                    dir('${WORKSPACE}/microservices-calculator/') {
+                    dir("${WORKSPACE}/${env.APP_REPO_NAME}/") {
                         script {
                             env.APP_NAME = sh(script: 'cat pom.xml | xq -x //artifactId | head -1', returnStdout: true).trim()
                             env.ENVIRONMENT = 'prd'
@@ -43,7 +46,7 @@ pipeline {
             }
         }
 
-        stage('CD') {
+        stage('APP Deploymentto AKS') {
             steps {
                 container('kbctl-helm') {
                     sh "helm upgrade --install ${env.ENVIRONMENT}-${env.APP_NAME} golden-chart/ -n ${env.ENVIRONMENT}-${env.APP_NAME} -f  ${env.ENVIRONMENT}/${env.APP_NAME}/values.yaml --set=image.name=${env.ENVIRONMENT}-${env.APP_NAME} --set=image.tag=${env.APP_VERSION} --create-namespace"

@@ -11,7 +11,7 @@
     
     <packaging>war</packaging>
     
-    <name>manik-calculator</name>
+    <name>manik-calculator-1</name>
     
     <properties>
         <tomcat.version>9.0.52</tomcat.version>
