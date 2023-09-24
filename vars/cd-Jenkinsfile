@@ -63,8 +63,8 @@ pipeline {
         stage('APP Deploymentto AKS') {   
             steps {             
                 container('App URL') {
-                    sh """export NODE_PORT=$(kubectl get --namespace prd-manik-calculator-1 -o jsonpath="{.spec.ports[0].nodePort}" services prd-java-calc) \
-                        export NODE_IP=$(kubectl get nodes --namespace prd-manik-calculator-1 -o jsonpath="{.items[0].status.addresses[0].address}")
+                    sh """export NODE_PORT=$(kubectl get --namespace ${env.ENVIRONMENT}-${env.APP_NAME} -o jsonpath="{.spec.ports[0].nodePort}" ${env.ENVIRONMENT}-${env.APP_NAME}-svc) \
+                        export NODE_IP=$(kubectl get nodes --namespace ${env.ENVIRONMENT}-${env.APP_NAME} -o jsonpath="{.items[0].status.addresses[0].address}")
                         echo http://$NODE_IP:$NODE_PORT"""
                 }
             }
