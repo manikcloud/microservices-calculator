@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     
     <groupId>com.example.manikcalculator</groupId>
-    <artifactId>manik-calculator</artifactId>
+    <artifactId>manik-calculator-1</artifactId>
     <version>1.0.0</version>
     
     <packaging>war</packaging>
