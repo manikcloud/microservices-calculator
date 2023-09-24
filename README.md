@@ -19,7 +19,7 @@ This Java Spring-based web application showcases a basic calculator. It is part 
 3. **View Layer**: JSP files located under `WEB-INF/views/` serve as the view component.
 4. **CSS**: Stylesheets are located in the `webapp` directory as `styles.css`.
 
-## CI/CD Integration
+## CI/CD Integration 
 
 When code is pushed to this repository, it triggers the CI/CD pipeline hosted in [AzureK8s-CICD-Flow](https://github.com/manikcloud/AzureK8s-CICD-Flow). The pipeline takes care of building the application, running tests, and deploying it to the Kubernetes cluster.
 
