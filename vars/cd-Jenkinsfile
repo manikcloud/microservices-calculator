@@ -49,25 +49,29 @@ pipeline {
         stage('APP Deploymentto AKS') {
             steps {
                 container('kbctl-helm') {
-                    sh """helm upgrade --install ${env.ENVIRONMENT}-${env.APP_NAME} golden-chart/ \
+                    script {
+                         sh(script: 'helm upgrade --install ${env.ENVIRONMENT}-${env.APP_NAME} golden-chart/ \
                         -n ${env.ENVIRONMENT}-${env.APP_NAME} \
                         -f ${env.ENVIRONMENT}/${env.APP_NAME}/values.yaml \
                         --set=image.repository=${env.ENVIRONMENT}-${env.APP_NAME} \
                         --set=image.tag=${env.APP_VERSION} \
                         --set=fullnameOverride=${env.ENVIRONMENT}-${env.APP_NAME}-svc \
-                        --create-namespace"""
+                        --create-namespace')
+                    }
                     sh "helm ls -A"
                 }
             }
         }
-        stage('APP Deploymentto AKS') {   
-            steps {             
-                container('App URL') {
-                    sh """export NODE_PORT=$(kubectl get --namespace ${env.ENVIRONMENT}-${env.APP_NAME} -o jsonpath="{.spec.ports[0].nodePort}" ${env.ENVIRONMENT}-${env.APP_NAME}-svc) \
-                        export NODE_IP=$(kubectl get nodes --namespace ${env.ENVIRONMENT}-${env.APP_NAME} -o jsonpath="{.items[0].status.addresses[0].address}")
-                        echo http://$NODE_IP:$NODE_PORT"""
-                }
-            }
-        }
+        
+        // stage('APP Deploymentto AKS') {   
+        //     steps {             
+        //         container('App URL') {
+        //             sh """export NODE_PORT=$(kubectl get --namespace ${env.ENVIRONMENT}-${env.APP_NAME} -o jsonpath="{.spec.ports[0].nodePort}" ${env.ENVIRONMENT}-${env.APP_NAME}-svc) \
+        //                 export NODE_IP=$(kubectl get nodes --namespace ${env.ENVIRONMENT}-${env.APP_NAME} -o jsonpath="{.items[0].status.addresses[0].address}")
+        //                 echo http://$NODE_IP:$NODE_PORT"""
+        //         }
+        //     }
+        // }
+    
     }
 }
