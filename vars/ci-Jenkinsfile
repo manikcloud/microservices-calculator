@@ -24,6 +24,7 @@
       }
         environment {
           APP_REPO_NAME = 'microservices-calculator'
+          ACR_REPO = 'aksacrapp.azurecr.io'
         }
         stages {
           stage('Git Checkout') {
@@ -37,7 +38,7 @@
                       env.IMAGE_NAME = "${env.ENVIRONMENT}-${env.APP_NAME}:${env.APP_VERSION}"
                       echo "${env.IMAGE_NAME}"
                       // env.DOCKER_TAG = sh(script: 'git log --format="%h" -n 1', returnStdout: true).trim()
-                      env.DOCKER_IMAGE = "aksacrapp.azurecr.io/${env.IMAGE_NAME}"
+                      env.DOCKER_IMAGE = "${env.ACR_REPO}/${env.IMAGE_NAME}"
                 }
               }
             }
@@ -102,7 +103,7 @@
                   withCredentials([usernamePassword(credentialsId: 'aksacrapp', usernameVariable: 'ACR_USERNAME', passwordVariable: 'ACR_PASSWORD')]) {
                       container('docker') {
                       sh """
-                      docker login aksacrapp.azurecr.io -u $ACR_USERNAME -p $ACR_PASSWORD
+                      docker login ${env.ACR_REPO} -u $ACR_USERNAME -p $ACR_PASSWORD
                       """
                       }
                   }
