@@ -21,6 +21,7 @@ pipeline {
     }
     environment {
         APP_REPO_NAME = 'microservices-calculator'
+        ACR_REPO = 'aksacrapp.azurecr.io'
     }    
     stages {
         stage('APP Details') {
@@ -39,7 +40,7 @@ pipeline {
                             env.IMAGE_NAME = "${env.ENVIRONMENT}-${env.APP_NAME}:${env.APP_VERSION}"
                             echo "${env.IMAGE_NAME}"
                             // env.DOCKER_TAG = sh(script: 'git log --format="%h" -n 1', returnStdout: true).trim()
-                            env.DOCKER_IMAGE = "aksacrapp.azurecr.io/${env.IMAGE_NAME}"
+                            env.DOCKER_IMAGE = "${env.ACR_REPO}/${env.IMAGE_NAME}"
                         }
                     }
                 }
@@ -52,9 +53,8 @@ pipeline {
                         sh "helm upgrade --install ${env.ENVIRONMENT}-${env.APP_NAME} golden-chart/ " +
                         "-n ${env.ENVIRONMENT}-${env.APP_NAME} " +
                         "-f ${env.ENVIRONMENT}/${env.APP_NAME}/values.yaml " +
-                        "--set=image.repository=${env.ENVIRONMENT}-${env.APP_NAME} " +
+                        "--set=image.repository=${env.ACR_REPO}/${env.ENVIRONMENT}-${env.APP_NAME} " +
                         "--set=image.tag=${env.APP_VERSION} " +
-                        "--set=fullnameOverride=${env.ENVIRONMENT}-${env.APP_NAME}-svc " +
                         "--create-namespace"
                         
                         sh 'helm ls -A'
