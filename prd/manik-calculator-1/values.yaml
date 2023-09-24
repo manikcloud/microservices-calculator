@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: aksacrapp.azurecr.io/calc
+  repository: aksacrapp.azurecr.io/prd-manik-calculator-1
   pullPolicy: Always
   tag: 
     value: "latest"
@@ -9,7 +9,7 @@ image:
 
 imagePullSecrets: []
 nameOverride: ""
-fullnameOverride: "prd-java-calc"
+fullnameOverride: "App-name"
 
 serviceAccount:
   create: false
